@@ -1,9 +1,9 @@
-1. Перейти на spring data jdbc (нативные запросы)
-2. почитать про mapstruct
-3. научиться в DTO и понять как их использовать
-4. поднять docker compose
-5. Перейти у всех entity на record
-6. использовать вместо application.properties yaml формат
+1. Перейти на spring data jdbc (нативные запросы)+
+2. почитать про mapstruct+
+3. научиться в DTO и понять как их использовать+
+4. поднять docker compose+
+5. Перейти у всех entity на record+
+6. использовать вместо application.properties yaml формат+
 
 
 Что дальше?

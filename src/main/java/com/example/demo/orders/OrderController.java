@@ -6,16 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pets/")
+@RequestMapping("/api/order")
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderMapper orderMapper;
 
     @Autowired
-    public OrderController(OrderService orderService, OrderMapper orderMapper) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.orderMapper = orderMapper;
     }
 
     @GetMapping
@@ -23,9 +21,9 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
-    @GetMapping("/{orderId}")
-    public OrderResponse getOrderById(@PathVariable("orderId") Long orderId){
-        return orderService.getOrder(orderId);
+    @GetMapping("/{order_id}")
+    public OrderResponse getOrderById(@PathVariable("order_id") Long order_id){
+        return orderService.getOrder(order_id);
     }
 
     @PostMapping
@@ -35,13 +33,13 @@ public class OrderController {
         orderService.createOrder(request);
     }
 
-    @PutMapping("/{orderId}")
-    public void updateOrder(@PathVariable("orderId") Long orderId, @RequestBody OrderRequest request){
-        orderService.updateOrder(orderId, request);
+    @PutMapping("/{order_id}")
+    public void updateOrder(@PathVariable("order_id") Long order_id, @RequestBody OrderRequest request){
+        orderService.updateOrder(order_id, request);
     }
 
-    @DeleteMapping("/{orderId}")
-    public void deleteOrder(@PathVariable("orderId") Long orderId){
-        orderService.deleteOrder(orderId);
+    @DeleteMapping("/{order_id}")
+    public void deleteOrder(@PathVariable("order_id") Long order_id){
+        orderService.deleteOrder(order_id);
     }
 }

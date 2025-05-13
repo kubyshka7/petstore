@@ -7,16 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pets/")
+@RequestMapping("/api/pet")
 public class PetController {
 
     private final PetService petService;
-    private final PetMapper petMapper;
 
     @Autowired
-    public PetController(PetService petService, PetMapper petMapper) {
+    public PetController(PetService petService) {
         this.petService = petService;
-        this.petMapper = petMapper;
     }
 
     @GetMapping
@@ -24,9 +22,9 @@ public class PetController {
         return petService.getAllPets();
     }
 
-    @GetMapping("/{petId}")
-    public PetResponse getPetById(@PathVariable("petId") Long petId){
-        return petService.getPet(petId);
+    @GetMapping("/{pet_id}")
+    public PetResponse getPetById(@PathVariable("pet_id") Long pet_id){
+        return petService.getPet(pet_id);
     }
 
     @PostMapping
@@ -36,13 +34,13 @@ public class PetController {
         petService.createPet(request);
     }
 
-    @PutMapping("/{petId}")
-    public void updatePet(@PathVariable("petId") Long petId, @RequestBody PetRequest request){
-        petService.updatePet(petId, request);
+    @PutMapping("/{pet_id}")
+    public void updatePet(@PathVariable("pet_id") Long pet_id, @RequestBody PetRequest request){
+        petService.updatePet(pet_id, request);
     }
 
-    @DeleteMapping("/{petId}")
-    public void deletePet(@PathVariable("petId") Long petId){
-        petService.deletePet(petId);
+    @DeleteMapping("/{pet_id}")
+    public void deletePet(@PathVariable("pet_id") Long pet_id){
+        petService.deletePet(pet_id);
     }
 }

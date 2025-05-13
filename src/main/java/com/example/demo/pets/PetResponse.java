@@ -3,8 +3,9 @@ package com.example.demo.pets;
 import java.time.LocalDate;
 
 public record PetResponse(
-        Long id,
-        String name,
-        String type,
-        LocalDate birthdate
+        Long pet_id,
+        String pet_name,
+        String pet_type,
+        LocalDate birthdate,
+        String pet_owner
 ) {}

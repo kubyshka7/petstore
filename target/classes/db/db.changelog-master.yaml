@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: kubyshka
+      runOnChange: true
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: ;
+            path: db\create-tables-and-dependencies.sql
+            splitStatements: true
+            scriptComments: true

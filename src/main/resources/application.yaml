@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url:  "jdbc:postgresql://localhost:5432/postgres"
+    username:  postgres
+    password:  root
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/db.changelog-master.yaml
+  application:
+    name: petstore
+  logging:
+    level:
+      org.springframework.web: DEBUG
+

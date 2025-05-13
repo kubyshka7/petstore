@@ -2,19 +2,14 @@ package com.example.demo.pets;
 
 import com.example.demo.pets.request.PetRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PetService {
-
     private static final String NAME_REGEX = "^[A-za-zА-Яа-яЁё]+$";
     private final PetRepository petRepository;
     private final PetMapper petMapper;
@@ -38,34 +33,37 @@ public class PetService {
     }
 
     public void createPet(PetRequest request) {
-        if (!request.name().matches(NAME_REGEX)) {
-            throw new IllegalArgumentException("Name must have only letters");
+        List<String> errors = new ArrayList<>();
+        if ((request.pet_name() == null) || !request.pet_name().matches(NAME_REGEX)) {
+            errors.add("Name must have only letters");
         }
-        if (request.birthDate().isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Birth date must be less than current date");
+        if (request.birthdate().isAfter(LocalDate.now())) {
+            errors.add("Birth date must be less than current date");
         }
-        if (!request.owner().matches(NAME_REGEX)) {
-            throw new IllegalArgumentException("Name must have only letters");
+        if (!(request.pet_owner() == null) && !request.pet_owner().matches(NAME_REGEX)) {
+            errors.add("Customer name must have only letters");
+        }
+        if(!errors.isEmpty()){
+            throw new IllegalArgumentException(String.join(", ", errors));
         }
         petRepository.createNewPet(petMapper.toEntity(request));
     }
 
     public void updatePet(Long id, PetRequest petRequest) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID must not be empty");
-        }
-
         Pet pet = petMapper.toEntity(petRequest);
         List<String> errors = new ArrayList<>();
 
-        if (!pet.getName().matches("^[A-za-zА-Яа-яЁё]+$")) {
+        if (id == null) {
+            errors.add("ID must not be empty");
+        }
+        if ((pet.pet_name() == null) || !pet.pet_name().matches(NAME_REGEX)) {
             errors.add("Name must have only letters");
         }
-        if (pet.getBirthdate().isAfter(LocalDate.now())) {
+        if (pet.birthdate().isAfter(LocalDate.now())) {
             errors.add("Birth date must be less than current date");
         }
-        if (!pet.getOwner().matches("^[A-za-zА-Яа-яЁё]+$")) {
-            errors.add("Name must have only letters");
+        if (!(pet.pet_owner() == null) && !pet.pet_owner().matches(NAME_REGEX)) {
+            errors.add("Owner name must have only letters");
         }
         if(!errors.isEmpty()){
             throw new IllegalArgumentException(String.join(", ", errors));

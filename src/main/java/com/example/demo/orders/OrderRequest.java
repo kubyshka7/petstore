@@ -6,5 +6,5 @@ public record OrderRequest(
         Long petId,
         String customerName,
         LocalDate orderDate,
-        Status orderStatus
+        Status status
 ) {}
