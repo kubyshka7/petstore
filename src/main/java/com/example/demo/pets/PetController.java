@@ -1,6 +1,6 @@
 package com.example.demo.pets;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +11,6 @@ public class PetController {
 
     private final PetService petService;
 
-    @Autowired
     public PetController(PetService petService) {
         this.petService = petService;
     }
@@ -22,24 +21,24 @@ public class PetController {
     }
 
     @GetMapping("/{id}")
-    public Pet returnPet(@PathVariable("petId") Long id){
+    public Pet returnPet(@PathVariable Long id) {
         return petService.getPet(id);
     }
 
     @PostMapping
-    public Pet createPet(
-            @RequestBody Pet pet
-    ){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Pet createPet(@RequestBody Pet pet) {
         return petService.createPet(pet);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePet(@PathVariable("petId") Long id){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePet(@PathVariable Long id) {
         petService.deletePet(id);
     }
 
     @PutMapping("/{id}")
-    public void putPet(@PathVariable("petId") Long id, @RequestBody Pet pet){
-        petService.putPet(id, pet);
+    public Pet putPet(@PathVariable Long id, @RequestBody Pet pet) {
+        return petService.putPet(id, pet);
     }
 }

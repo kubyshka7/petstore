@@ -1,8 +1,7 @@
 package com.example.demo.pets;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.common.NotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,75 +9,58 @@ import java.util.List;
 @Service
 public class PetService {
 
+    private static final String LETTERS = "^[A-Za-zА-Яа-яЁё]+$";
+
     private final PetRepository petRepository;
 
-    @Autowired
     public PetService(PetRepository petRepository) {
         this.petRepository = petRepository;
     }
 
-    public List<Pet> getAllPets(){
+    public List<Pet> getAllPets() {
         return petRepository.findAll();
     }
 
-    public Pet getPet(Long id){
-        if(id==null){
-            throw new IllegalArgumentException("ID must not be empty");
-        }
-        if(petRepository.findById(id).isEmpty()){
-            throw new IllegalArgumentException("Pet with this ID is not found");
-        }
-        return petRepository.findById(id).get();
+    public Pet getPet(Long id) {
+        return petRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Pet with ID " + id + " is not found"));
     }
 
     public Pet createPet(Pet pet) {
-        if(pet.getId()!=null){
+        if (pet.getId() != null) {
             throw new IllegalArgumentException("ID must be empty");
         }
-        if (!pet.getName().matches("^[A-za-zА-Яа-яЁё]+$")){
-            throw new IllegalArgumentException("Name must have only letters");
-        }
-        if (pet.getBirthdate().getDayOfYear() >= LocalDate.now().getDayOfYear()){
-            throw new IllegalArgumentException("Birth date must be less than current date");
-        }
-        if (!pet.getOwner().matches("^[A-za-zА-Яа-яЁё]+$")){
-            throw new IllegalArgumentException("Name must have only letters");
-        }
+        validate(pet);
         return petRepository.save(pet);
     }
 
     public void deletePet(Long id) {
-        if(petRepository.findById(id).isEmpty()){
-            throw new IllegalArgumentException("Pet with this ID is not found");
+        if (!petRepository.existsById(id)) {
+            throw new NotFoundException("Pet with ID " + id + " is not found");
         }
         petRepository.deleteById(id);
     }
 
-    public void putPet(Long id, Pet pet) {
-        if(id==null){
-            throw new IllegalArgumentException("ID must not be empty");
-        }
-        if(petRepository.findById(id).isEmpty()){
-            throw new IllegalArgumentException("Pet with this ID is not found");
-        }
-        if(pet.getId()==null){
-            throw new IllegalArgumentException("pet ID must not be empty");
-        }
-        if (!pet.getName().matches("^[A-za-zА-Яа-яЁё]+$")){
-            throw new IllegalArgumentException("Name must have only letters");
-        }
-        if (pet.getBirthdate().getDayOfYear() >= LocalDate.now().getDayOfYear()){
-            throw new IllegalArgumentException("Birth date must be less than current date");
-        }
-        if (!pet.getOwner().matches("^[A-za-zА-Яа-яЁё]+$")){
-            throw new IllegalArgumentException("Name must have only letters");
-        }
-        Pet newpet = petRepository.findById(id).get();
-        newpet.setBirthdate(pet.getBirthdate());
-        newpet.setName(pet.getName());
-        newpet.setType(pet.getType());
-        newpet.setOwner(pet.getOwner());
+    public Pet putPet(Long id, Pet pet) {
+        Pet existing = getPet(id);
+        validate(pet);
 
-        petRepository.save(newpet);
+        existing.setName(pet.getName());
+        existing.setType(pet.getType());
+        existing.setBirthdate(pet.getBirthdate());
+        existing.setOwner(pet.getOwner());
+        return petRepository.save(existing);
+    }
+
+    private void validate(Pet pet) {
+        if (pet.getName() == null || !pet.getName().matches(LETTERS)) {
+            throw new IllegalArgumentException("Pet name must have only letters");
+        }
+        if (pet.getOwner() == null || !pet.getOwner().matches(LETTERS)) {
+            throw new IllegalArgumentException("Owner name must have only letters");
+        }
+        if (pet.getBirthdate() == null || pet.getBirthdate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Birth date must not be in the future");
+        }
     }
 }

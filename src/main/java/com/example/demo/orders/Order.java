@@ -1,9 +1,7 @@
 package com.example.demo.orders;
 
 import com.example.demo.pets.Pet;
-import com.example.demo.pets.PetRepository;
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
